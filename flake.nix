@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -20,8 +26,15 @@
           default = printer-driver-xprinter;
         };
       }
-    ) // {
-      nixosModules.default = { pkgs, lib, config, ... }:
+    )
+    // {
+      nixosModules.default =
+        {
+          pkgs,
+          lib,
+          config,
+          ...
+        }:
         let
           cfg = config.services.printing.drivers.xprinter;
         in
@@ -35,4 +48,4 @@
           };
         };
     };
-} 
+}

@@ -1,10 +1,11 @@
-{ lib
-, stdenv
-, fetchurl
-, cups
-, dpkg
-, autoPatchelfHook
-, makeWrapper
+{
+  lib,
+  stdenv,
+  fetchurl,
+  cups,
+  dpkg,
+  autoPatchelfHook,
+  makeWrapper,
 }:
 
 stdenv.mkDerivation rec {
@@ -27,10 +28,10 @@ stdenv.mkDerivation rec {
   # Don't unpack directly to $out
   unpackPhase = ''
     runHook preUnpack
-    
+
     mkdir -p $TMPDIR/unpacked
     dpkg-deb -x $src $TMPDIR/unpacked
-    
+
     runHook postUnpack
   '';
 
@@ -43,7 +44,7 @@ stdenv.mkDerivation rec {
   # Create the structure in $out and copy files there
   installPhase = ''
     runHook preInstall
-    
+
     # Determine architecture
     ARCH=""
     case ${stdenv.hostPlatform.system} in
@@ -76,7 +77,7 @@ stdenv.mkDerivation rec {
     for file in $out/share/cups/model/xprinter/*.ppd; do
       sed -i "s|/opt/xprinter/printer-driver-xprinter/bin/|$out/lib/cups/filter/|g" "$file"
     done
-    
+
     runHook postInstall
   '';
 
@@ -87,4 +88,4 @@ stdenv.mkDerivation rec {
     platforms = platforms.linux;
     maintainers = [ maintainers.fnltochka ];
   };
-} 
+}

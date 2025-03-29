@@ -31,25 +31,32 @@ Add this repository as an input in your `flake.nix`:
 }
 ```
 
-### Using Package Import
+### Using fetchFromGitHub
 
-If you don't use flakes, you can install the package by adding it to your NixOS configuration:
+If you don't use flakes, you can install the package using `fetchFromGitHub` in your NixOS configuration:
 
 ```nix
-{ config, pkgs, ... }:
-
-let
-  xprinter-driver = pkgs.callPackage /path/to/xprinter-cups-nix {};
-in
-{
-  services.printing.enable = true;
-  services.printing.drivers = [ xprinter-driver ];
+{pkgs, ...}: let
+  xprinter-driver = pkgs.callPackage (
+    pkgs.fetchFromGitHub {
+      owner = "fnltochka";
+      repo = "xprinter-cups-nix";
+      rev = "main";
+      sha256 = "sha256-J7DFgVd9uO9dHzv4hP6ivcmbCuIUZsxDhputG5zatrA=";
+    }
+  ) {};
+in {
+  services.printing = {
+    enable = true;
+    drivers = [xprinter-driver];
+  };
 }
 ```
 
 ## Supported Architectures
 
 The package supports the following architectures:
+
 - x86_64 (x64)
 - i686 (x86)
 - aarch64 (ARM64)
@@ -82,4 +89,4 @@ This package is distributed under the same license as the original XPrinter driv
 
 ## Localization
 
-- [Russian version (Русская версия)](README.ru.md) 
+- [Russian version (Русская версия)](README.ru.md)

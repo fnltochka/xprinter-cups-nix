@@ -31,25 +31,32 @@
 }
 ```
 
-### Через импорт пакета
+### Через fetchFromGitHub
 
-Если вы не используете flakes, вы можете установить пакет, добавив его в свою конфигурацию NixOS:
+Если вы не используете flakes, вы можете установить пакет с помощью `fetchFromGitHub` в своей конфигурации NixOS:
 
 ```nix
-{ config, pkgs, ... }:
-
-let
-  xprinter-driver = pkgs.callPackage /path/to/xprinter-cups-nix {};
-in
-{
-  services.printing.enable = true;
-  services.printing.drivers = [ xprinter-driver ];
+{pkgs, ...}: let
+  xprinter-driver = pkgs.callPackage (
+    pkgs.fetchFromGitHub {
+      owner = "fnltochka";
+      repo = "xprinter-cups-nix";
+      rev = "main";
+      sha256 = "sha256-J7DFgVd9uO9dHzv4hP6ivcmbCuIUZsxDhputG5zatrA=";
+    }
+  ) {};
+in {
+  services.printing = {
+    enable = true;
+    drivers = [xprinter-driver];
+  };
 }
 ```
 
 ## Поддерживаемые архитектуры
 
 Пакет поддерживает следующие архитектуры:
+
 - x86_64 (x64)
 - i686 (x86)
 - aarch64 (ARM64)
@@ -78,4 +85,4 @@ in
 
 ## Лицензия
 
-Этот пакет распространяется под той же лицензией, что и оригинальный драйвер XPrinter. 
+Этот пакет распространяется под той же лицензией, что и оригинальный драйвер XPrinter.
